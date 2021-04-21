@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<title>ADMIN | Shop Laptop</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" href="/">
+				<img th:src="@{/images/logo.jpg}" width="30" height="30" class="d-inline-block align-top" alt="">
+				Shop Laptop
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNavDropdown">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/users}">Users <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/categories}">Categories</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/brands}">Brands</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/products}">Products</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/customers}">Customers</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/customers}">Shipping</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/orders}">Orders</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/shipping}">Customers</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/report}">Sale Reports</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/articles}">Articles</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/menus}">Menus</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/settings}">Settings</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="mt-5 mb-3">
+			<h2>[[${pageTitle}]]</h2>
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+					<li class="breadcrumb-item"><a th:href="@{/users}">Users</a></li>
+					<li class="breadcrumb-item active" aria-current="page">[[${pageTitle}]]</li>
+				</ol>
+			</nav>
+		</div>
+
+		<div class="row justify-content-md-center">
+			<div class="col-lg-6">
+				<!-- FORM -->
+				<form th:object="${user}" th:action="@{/users/save}" method="POST"
+					  onsubmit="return checkEmailUnique(this)">
+					<input id="userIdInput" type="hidden" th:field="*{id}"/>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="inputEmail">Email</label>
+							<input th:field="*{email}" type="email" class="form-control" id="inputEmail"
+								   placeholder="hovanvydut@gmail.com" required minlength="8" maxlength="128">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="inputPassword">Password</label>
+							<input th:if="${user.id == null}" th:field="*{password}" type="password" class="form-control" id="inputPassword"
+								   placeholder="More than 8 characters" required minlength="8" maxlength="20">
+							<input th:if="${user.id != null}" th:field="*{password}" type="password" class="form-control" id="inputPassword"
+								   placeholder="More than 8 characters" minlength="8" maxlength="20">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="inputFirstName">First Name</label>
+							<input th:field="*{firstName}" type="text" class="form-control" id="inputFirstName"
+								   placeholder="John" required minlength="2" maxlength="45">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="inputLastName">Last Name</label>
+							<input th:field="*{lastName}" type="text" class="form-control" id="inputLastName"
+								   placeholder="Doe" required minlength="2" maxlength="45">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Roles:</label>
+						<div class="col-sm-10">
+							<th:block th:each="role : ${listRoles}">
+								<div class="form-check">
+									<input th:field="*{roles}"
+										   th:value="${role.id}"
+										   th:text="${role.name}"
+										   class="form-check-input my-2" type="checkbox">
+									- <small>[[${role.description}]]</small>
+									<br>
+								</div>
+							</th:block>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="form-check">
+							<input th:field="*{enable}" class="form-check-input" type="checkbox" id="gridCheck">
+							<label class="form-check-label" for="gridCheck">
+								Enable
+							</label>
+						</div>
+					</div>
+					<div class="text-center">
+						<input th:if="${user.id == null}" type="submit" class="btn btn-primary" value="Create"/>
+						<input th:if="${user.id != null}" type="submit" class="btn btn-primary" value="Update"/>
+						<input type="button" class="btn btn-secondary" value="Cancel" id="btnCancel"/>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!--  MODAL	-->
+		<div id="checkEmailUniqueModal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 id="modal_title" class="modal-title">Warning...</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="modal_content">This email is existing. Please choose another.</p>
+					</div>
+					<div class="modal-footer">
+						<button id="modal_button" type="button" class="btn btn-warning" data-dismiss="modal">
+							Ok, I'll choose another email!
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#btnCancel").on("click", function() {
+			window.location.href = "[[@{/users}]]";
+		});
+	});
+
+	function checkEmailUnique(form) {
+		let url = "[[@{/users/check_email_unique}]]";
+		let userId = $("#userIdInput").val();
+		let emailValue = $("#inputEmail").val();
+		let _csrfValue = $("input[name='_csrf']").val();
+
+		$.post(url,
+				{id: userId, email: emailValue, _csrf: _csrfValue},
+				function(response) {
+					if (response == "OK") {
+						form.submit();
+					} else if (response == "Duplicated") {
+						showModal("Warning ...", "There is another using this email", "I'll choose another email.")
+					}
+				}
+		).fail(function() {
+			showModal("Error !!!", "Couldn't connect to the server", "I'll try again later.")
+		})
+
+		return false;
+	}
+
+	function showModal(title, content, btn_content) {
+		$("#modal_title").text(title);
+		$("#modal_content").text(content);
+		$("#modal_button").text(btn_content);
+		$("#checkEmailUniqueModal").modal();
+	}
+</script>
+</html>
