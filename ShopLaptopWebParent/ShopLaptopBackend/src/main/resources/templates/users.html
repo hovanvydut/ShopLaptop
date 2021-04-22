@@ -103,15 +103,18 @@
 					<tr th:each="user: ${listUsers}">
 						<th>[[${user.id}]]</th>
 						<td class="text-center">
-							<i class="fas fa-portrait fa-3x icon-dark"></i>
+							<i th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-dark"></i>
+							<img style="max-width: 100px; max-height: 100px;" th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}" class="img-fluid fas fa-portrait fa-3x icon-dark" />
 						</td>
 						<td>[[${user.email}]]</td>
 						<td>[[${user.firstName}]]</td>
 						<td>[[${user.lastName}]]</td>
 						<td>[[${user.roles}]]</td>
 						<td class="text-center">
-							<a href="#" th:if="${user.enable == true}" class="fas fa-check icon-green fa-1x"></a>
-							<a href="#" th:if="${user.enable == false}" class="fas fa-check icon-dark fa-1x"></a>
+							<a th:href="@{'/users/' + ${user.id} + '/enable/false'}" th:if="${user.enable == true}"
+							   class="fas fa-check-circle icon-green fa-1x" title="Disable this user"></a>
+							<a th:href="@{'users/' + ${user.id} + '/enable/true'}" th:if="${user.enable == false}"
+							   class="fas fa-check-circle icon-dark fa-1x" title="Enable this user"></a>
 						</td>
 						<td class="text-center">
 							<a th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user">Edit</a> &nbsp;
@@ -136,7 +139,7 @@
 						<p id="modalContent">Modal body text goes here.</p>
 					</div>
 					<div class="modal-footer">
-						<button id="btnDeleteModal" type="button" class="btn btn-danger">Yes</button>
+						<a id="btnDeleteModal" type="button" class="btn btn-danger">Yes</a>
 						<button type="button" class="btn btn-secondary closeBtnModal" data-dismiss="modal">No</button>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 package com.shoplaptop.admin.user.controller;
 
+import com.shoplaptop.admin.FileUploadUtil;
 import com.shoplaptop.admin.common.exception.UserNotFoundException;
 import com.shoplaptop.admin.user.service.UserService;
 import com.shoplaptop.common.entity.Role;
@@ -7,11 +8,15 @@ import com.shoplaptop.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -43,8 +48,32 @@ public class UserController {
     }
 
     @PostMapping("/users/save")
-    public String saveUser(User user, RedirectAttributes redirectAttributes) {
-        this.userService.save(user);
+    public String saveUser(User user,
+                           RedirectAttributes redirectAttributes,
+                           @RequestParam("image") MultipartFile multipartFile) throws IOException {
+
+        if (!multipartFile.isEmpty()) {
+            if (multipartFile.getSize() > (1024 * 1024)) {
+                redirectAttributes.addFlashAttribute("message", "" +
+                        "Size file must be less than 1MB");
+
+                return "redirect:/users";
+            }
+
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            user.setPhotos(fileName);
+
+            User savedUser = this.userService.save(user);
+
+            String uploadDir = "user-photos/" + savedUser.getId();
+
+            FileUploadUtil.cleanDir(uploadDir);
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        } else {
+            if (user.getPhotos() == null || user.getPhotos().isEmpty()) user.setPhotos(null);
+            this.userService.save(user);
+        }
+
         redirectAttributes.addFlashAttribute(
                 "message", "A new user is created successfully.");
 
@@ -83,6 +112,19 @@ public class UserController {
         } catch (UserNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
         }
+
+        return "redirect:/users";
+    }
+
+    @GetMapping("/users/{id}/enable/{status}")
+    public String updateUserEnableStatus(@PathVariable("id") Integer id,
+                                         @PathVariable("status") boolean status,
+                                         RedirectAttributes redirectAttributes) {
+        this.userService.updateUserEnableStatus(id, status);
+
+        String statusMsg = status ? "enabled" : "disabled";
+        String msg = String.format("The user ID %d has been %s", id, statusMsg);
+        redirectAttributes.addFlashAttribute("message", msg);
 
         return "redirect:/users";
     }
