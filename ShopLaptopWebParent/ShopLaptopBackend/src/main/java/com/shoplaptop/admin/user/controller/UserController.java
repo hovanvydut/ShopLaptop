@@ -6,6 +6,7 @@ import com.shoplaptop.admin.user.service.UserService;
 import com.shoplaptop.common.entity.Role;
 import com.shoplaptop.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -26,11 +27,8 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/users")
-    public String listAll(Model model) {
-        List<User> listUsers = this.userService.listAll();
-        model.addAttribute("listUsers", listUsers);
-
-        return "users";
+    public String listFirstPage(Model model) {
+        return listByPage(1, model);
     }
 
     @GetMapping("/users/new")
@@ -127,5 +125,27 @@ public class UserController {
         redirectAttributes.addFlashAttribute("message", msg);
 
         return "redirect:/users";
+    }
+
+    @GetMapping("/users/page/{pageNumber}")
+    public String listByPage(@PathVariable("pageNumber") int pageNumber, Model model) {
+        Page<User> page = this.userService.listByPage(pageNumber);
+        List<User> list = page.getContent();
+
+        long startCount = (pageNumber - 1) * UserService.USERS_PER_PAGE + 1;
+        long endCount = startCount + UserService.USERS_PER_PAGE - 1;
+
+        if (endCount > page.getTotalPages()) {
+            endCount = page.getTotalElements();
+        }
+
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("totalElements", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("currentPage" , pageNumber);
+        model.addAttribute("listUsers", list);
+
+        return "users";
     }
 }

@@ -125,6 +125,30 @@
 			</table>
 		</div>
 
+		<div class="text-center m-1" th:if="${totalElements > 0}">
+			<span>Showing users #[[${startCount}]] to [[${endCount}]] of [[${totalElements}]]</span>
+
+			<nav aria-label="...">
+				<ul class="pagination justify-content-center">
+					<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+						<a class="page-link" th:href="@{'/users/page/' + ${currentPage - 1}}" tabindex="-1">Previous</a>
+					</li>
+					<th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+						<li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+							<a class="page-link" th:href="@{'/users/page/' + ${i}}">[[${i}]]</a>
+						</li>
+					</th:block>
+					<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}" >
+						<a class="page-link" th:href="@{'/users/page/' + ${currentPage + 1}}">Next</a>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+
+		<div class="text-center m-1" th:unless="${totalElements > 0}">
+			<span>No user founds</span>
+		</div>
 		<!-- MODAL -->
 		<div id="confirmDeleteModal" class="modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">

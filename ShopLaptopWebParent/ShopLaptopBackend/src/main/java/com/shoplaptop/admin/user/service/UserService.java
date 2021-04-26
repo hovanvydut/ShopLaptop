@@ -6,6 +6,9 @@ import com.shoplaptop.admin.user.repository.UserRepository;
 import com.shoplaptop.common.entity.Role;
 import com.shoplaptop.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ import java.util.Optional;
 @Transactional
 public class UserService {
 
+    public static final int USERS_PER_PAGE = 4;
     @Autowired
     public UserRepository userRepository;
 
@@ -107,5 +111,11 @@ public class UserService {
 
     public void updateUserEnableStatus(Integer id, boolean enable) {
         this.userRepository.updateEnableStatus(id, enable);
+    }
+
+    public Page<User> listByPage(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE);
+        return this.userRepository.findAll(pageable);
+
     }
 }
