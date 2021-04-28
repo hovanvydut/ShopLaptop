@@ -1,6 +1,5 @@
 package com.shoplaptop.admin.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 import com.shoplaptop.admin.user.repository.RoleRepository;
 import com.shoplaptop.common.entity.Role;
@@ -12,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

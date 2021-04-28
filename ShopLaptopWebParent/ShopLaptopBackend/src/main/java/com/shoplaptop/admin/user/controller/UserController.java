@@ -2,6 +2,8 @@ package com.shoplaptop.admin.user.controller;
 
 import com.shoplaptop.admin.FileUploadUtil;
 import com.shoplaptop.admin.UserCsvExporter;
+import com.shoplaptop.admin.UserExcelExporter;
+import com.shoplaptop.admin.UserPdfExporter;
 import com.shoplaptop.admin.common.exception.UserNotFoundException;
 import com.shoplaptop.admin.user.service.UserService;
 import com.shoplaptop.common.entity.Role;
@@ -176,6 +178,22 @@ public class UserController {
     public void exportToCSV(HttpServletResponse response) throws IOException {
         List<User> listUsers = this.userService.listAll();
         UserCsvExporter exporter = new UserCsvExporter();
+
+        exporter.export(listUsers, response);
+    }
+
+    @GetMapping("/users/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        List<User> listUsers = this.userService.listAll();
+        UserExcelExporter exporter = new UserExcelExporter();
+
+        exporter.export(listUsers, response);
+    }
+
+    @GetMapping("/users/export/pdf")
+    public void exportToPdf(HttpServletResponse response) throws IOException {
+        List<User> listUsers = this.userService.listAll();
+        UserPdfExporter exporter = new UserPdfExporter();
 
         exporter.export(listUsers, response);
     }
