@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,17 +44,20 @@ public class UserService {
         boolean updateMode = (user.getId() != null);
 
         if (updateMode) {
-            if (user.getPassword().isEmpty()) {
-                Optional<User> userOpt = this.userRepository.findById(user.getId());
+            Optional<User> userOpt = this.userRepository.findById(user.getId());
 
+            if (user.getPassword().isEmpty()) {
                 // still use old password
-                userOpt
-                        .ifPresent(
-                                existingUser -> user.setPassword(existingUser.getPassword())
-                        );
+                userOpt.ifPresent(existingUser ->
+                        user.setPassword(existingUser.getPassword()));
             } else {
                 // set new password
                 encodePassword(user);
+            }
+
+            if (user.getPhotos() == null) {
+                // still use old picture
+                userOpt.ifPresent(existingUser -> user.setPhotos(existingUser.getPhotos()));
             }
         } else {
             // Create new user MODE
@@ -113,9 +117,15 @@ public class UserService {
         this.userRepository.updateEnableStatus(id, enable);
     }
 
-    public Page<User> listByPage(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE);
-        return this.userRepository.findAll(pageable);
+    public Page<User> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
 
+        if (keyword != null) {
+            return this.userRepository.findAll(keyword, pageable);
+        }
+
+        return this.userRepository.findAll(pageable);
     }
 }

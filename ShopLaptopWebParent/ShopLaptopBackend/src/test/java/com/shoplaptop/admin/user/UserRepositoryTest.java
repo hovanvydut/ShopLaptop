@@ -140,4 +140,19 @@ public class UserRepositoryTest {
         List<User> listUsers = page.getContent();
         listUsers.forEach(System.out::println);
     }
+
+    @Test
+    @DisplayName("Search user")
+    public void testSearchUser() {
+        String keyword = "vy";
+        int pageNumber = 0;
+        int pageSize = 4;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> page = this.userRepository.findAll(keyword, pageable);
+
+        List<User> listUsers = page.getContent();
+        System.out.println(listUsers);
+        assertThat(listUsers.size()).isGreaterThan(0);
+    }
 }

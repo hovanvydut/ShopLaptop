@@ -72,10 +72,25 @@
 					<li class="breadcrumb-item active" aria-current="page">Users</li>
 				</ol>
 			</nav>
-			<div class="btn-group d-flex" role="group" aria-label="Tools">
-				<a class="badge badge-primary d-block mx-2" th:href="@{/users/new}">Create new user</a>
-				<a class="badge badge-primary d-block mx-2">Middle</a>
-				<a class="badge badge-primary d-block mx-2">Right</a>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="btn-group d-flex" role="group" aria-label="Tools">
+					<a class="badge badge-primary d-block mx-2" th:href="@{/users/new}">Create new user</a>
+					<a class="badge badge-primary d-block mx-2">Middle</a>
+					<a class="badge badge-primary d-block mx-2">Right</a>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<nav class="navbar navbar-light justify-content-end">
+					<form th:action="@{/users/page/1}" class="form-inline">
+						<input type="hidden" name="sortField" th:value="${sortField}"/>
+						<input type="hidden" name="sortDir" th:value="${sortDir}"/>
+						<input name="keyword" th:value="${keyword}" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+					</form>
+				</nav>
 			</div>
 		</div>
 
@@ -89,13 +104,13 @@
 			<table class="table table-bordered table-hover table-responsive-xl">
 				<thead class="thead-dark">
 					<tr>
-						<th scope="col">#ID</th>
+						<th th:replace="fragments/column_link :: column_link('id', '#ID')"></th>
 						<th scope="col">Photos</th>
-						<th scope="col">Email</th>
-						<th scope="col">First Name</th>
-						<th scope="col">Last Name</th>
+						<th th:replace="fragments/column_link :: column_link('email', 'Email')"></th>
+						<th th:replace="fragments/column_link :: column_link('firstName', 'First Name')"></th>
+						<th th:replace="fragments/column_link :: column_link('lastName', 'Last Name')"></th>
 						<th scope="col">Roles</th>
-						<th scope="col">Enable</th>
+						<th th:replace="fragments/column_link :: column_link('enable', 'Enable')"></th>
 						<th scope="col"></th>
 					</tr>
 				</thead>
@@ -131,15 +146,15 @@
 			<nav aria-label="...">
 				<ul class="pagination justify-content-center">
 					<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-						<a class="page-link" th:href="@{'/users/page/' + ${currentPage - 1}}" tabindex="-1">Previous</a>
+						<a th:replace="fragments/page_link :: page_link(${currentPage - 1}, 'Previous')"></a>
 					</li>
 					<th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
 						<li th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
-							<a class="page-link" th:href="@{'/users/page/' + ${i}}">[[${i}]]</a>
+							<a th:replace="fragments/page_link :: page_link(${i}, ${i})"></a>
 						</li>
 					</th:block>
 					<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}" >
-						<a class="page-link" th:href="@{'/users/page/' + ${currentPage + 1}}">Next</a>
+						<a th:replace="fragments/page_link :: page_link(${currentPage + 1}, 'Next')"></a>
 					</li>
 				</ul>
 			</nav>

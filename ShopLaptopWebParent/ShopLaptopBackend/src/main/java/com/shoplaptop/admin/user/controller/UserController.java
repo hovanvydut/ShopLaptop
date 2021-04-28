@@ -7,6 +7,7 @@ import com.shoplaptop.common.entity.Role;
 import com.shoplaptop.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -28,7 +29,7 @@ public class UserController {
 
     @GetMapping("/users")
     public String listFirstPage(Model model) {
-        return listByPage(1, model);
+        return listByPage(1, model, "firstName", "asc", null);
     }
 
     @GetMapping("/users/new")
@@ -68,14 +69,17 @@ public class UserController {
             FileUploadUtil.cleanDir(uploadDir);
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         } else {
-            if (user.getPhotos() == null || user.getPhotos().isEmpty()) user.setPhotos(null);
+            if (user.getPhotos() == null || user.getPhotos().isEmpty()) {
+                user.setPhotos(null);
+            }
             this.userService.save(user);
         }
 
         redirectAttributes.addFlashAttribute(
                 "message", "A new user is created successfully.");
 
-        return "redirect:/users";
+        String firstPartOfEmail = user.getEmail().split("@")[0];
+        return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }
 
     @GetMapping("/users/edit/{id}")
@@ -128,16 +132,29 @@ public class UserController {
     }
 
     @GetMapping("/users/page/{pageNumber}")
-    public String listByPage(@PathVariable("pageNumber") int pageNumber, Model model) {
-        Page<User> page = this.userService.listByPage(pageNumber);
+    public String listByPage(@PathVariable("pageNumber") int pageNumber, Model model,
+                             @Param("sortField") String sortField, @Param("sortDir") String sortDir,
+                             @Param("keyword") String keyword) {
+
+        if(sortField == null || sortField.isEmpty() || sortField.isBlank()) {
+            sortField = "firstName";
+        }
+
+        if (sortDir == null || sortDir.isEmpty() || sortDir.isBlank()) {
+            sortDir = "asc";
+        }
+
+        Page<User> page = this.userService.listByPage(pageNumber, sortField, sortDir, keyword);
         List<User> list = page.getContent();
 
-        long startCount = (pageNumber - 1) * UserService.USERS_PER_PAGE + 1;
+        long startCount = (long) (pageNumber - 1) * UserService.USERS_PER_PAGE + 1;
         long endCount = startCount + UserService.USERS_PER_PAGE - 1;
 
         if (endCount > page.getTotalPages()) {
             endCount = page.getTotalElements();
         }
+
+        String reverseOrder = sortDir.equals("asc") ? "desc" : "asc";
 
         model.addAttribute("startCount", startCount);
         model.addAttribute("endCount", endCount);
@@ -145,6 +162,10 @@ public class UserController {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("currentPage" , pageNumber);
         model.addAttribute("listUsers", list);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseOrder", reverseOrder);
+        model.addAttribute("keyword", keyword);
 
         return "users";
     }
