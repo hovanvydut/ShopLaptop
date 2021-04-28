@@ -1,6 +1,7 @@
 package com.shoplaptop.admin.user.controller;
 
 import com.shoplaptop.admin.FileUploadUtil;
+import com.shoplaptop.admin.UserCsvExporter;
 import com.shoplaptop.admin.common.exception.UserNotFoundException;
 import com.shoplaptop.admin.user.service.UserService;
 import com.shoplaptop.common.entity.Role;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -168,5 +170,13 @@ public class UserController {
         model.addAttribute("keyword", keyword);
 
         return "users";
+    }
+
+    @GetMapping("/users/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        List<User> listUsers = this.userService.listAll();
+        UserCsvExporter exporter = new UserCsvExporter();
+
+        exporter.export(listUsers, response);
     }
 }
