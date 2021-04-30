@@ -75,6 +75,12 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<!--	Integrate spring security into thymeleaf	-->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+		</dependency>
+
 		<!--	Refer to ShopLaptopCommon	-->
 		<dependency>
 			<groupId>com.shoplaptop</groupId>

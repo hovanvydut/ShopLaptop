@@ -1,4 +1,4 @@
-package com.shoplaptop.admin;
+package com.shoplaptop.admin.common.util;
 
 import org.springframework.web.multipart.MultipartFile;
 

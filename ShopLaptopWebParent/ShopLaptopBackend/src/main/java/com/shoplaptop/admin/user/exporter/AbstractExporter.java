@@ -1,4 +1,4 @@
-package com.shoplaptop.admin;
+package com.shoplaptop.admin.user.exporter;
 
 import com.shoplaptop.common.entity.User;
 
