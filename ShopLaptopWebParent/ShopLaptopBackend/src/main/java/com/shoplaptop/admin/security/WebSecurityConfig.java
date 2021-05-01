@@ -48,7 +48,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("email")
                     .defaultSuccessUrl("/", true)
                     .permitAll()
-                .and().logout().permitAll();
+                .and().logout().permitAll()
+                .and()
+                    .rememberMe()
+                    .key("AbcdEfghIjkLmnOpqRstUvwXyz12312121s")
+                    .tokenValiditySeconds(7 * 24 * 60 * 60);
     }
 
     @Override
