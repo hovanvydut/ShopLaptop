@@ -67,7 +67,7 @@
                         <span class="fas fa-user fa-2x icon-silver"></span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" sec:authentication="principal.fullname"></a>
+                        <a th:href="@{/account}" class="nav-link" sec:authentication="principal.fullname"></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="logoutLink" href="#">Logout</a>

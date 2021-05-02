@@ -52,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .rememberMe()
                     .key("AbcdEfghIjkLmnOpqRstUvwXyz12312121s")
-                    .tokenValiditySeconds(7 * 24 * 60 * 60);
+                    .tokenValiditySeconds(7 * 24 * 60 * 60)
+                    .userDetailsService(this.userDetailsService);
     }
 
     @Override

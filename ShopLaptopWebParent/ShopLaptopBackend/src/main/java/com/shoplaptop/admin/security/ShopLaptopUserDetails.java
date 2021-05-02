@@ -66,4 +66,12 @@ public class ShopLaptopUserDetails implements UserDetails {
     public String getFullname() {
         return user.getFirstName() + " " + user.getLastName();
     }
+
+    public void setFirstName(String firstName) {
+        this.user.setFirstName(firstName);
+    }
+
+    public void setLastname(String lastName) {
+        this.user.setLastName(lastName);
+    }
 }
