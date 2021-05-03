@@ -21,14 +21,16 @@
         </nav>
     </div>
 
-    <th:block th:if="${message != null}">
-        <div class="alert alert-success text-center" role="alert">
-            [[${message}]]
-        </div>
-    </th:block>
 
     <div class="row justify-content-md-center">
         <div class="col-lg-6">
+
+            <th:block th:if="${message != null}">
+                <div class="alert alert-success text-center" role="alert">
+                    [[${message}]]
+                </div>
+            </th:block>
+
             <!-- FORM -->
             <form th:object="${user}" th:action="@{/account/update}" method="POST"
                   enctype="multipart/form-data">
@@ -118,36 +120,7 @@
 </div>
 </body>
 <script type="text/javascript">
-
-    $(document).ready(function () {
-        $("#btnCancel").on("click", function () {
-            window.location.href = "[[@{/users}]]";
-        });
-
-        $("#fileImageInput").on("change", function () {
-            let fileSize = this.files[0].size;
-
-            if (fileSize > (1024 * 1024)) {
-                this.setCustomValidity("You must choose an image less than 1MB");
-                this.reportValidity();
-            } else {
-                this.setCustomValidity("");
-                showImageThumbnail(this);
-            }
-        })
-    });
-
-    function showImageThumbnail(fileInput) {
-        let file = fileInput.files[0];
-        let reader = new FileReader();
-
-        reader.onload = function (e) {
-            $("#thumbnail").attr("src", e.target.result);
-        }
-
-        reader.readAsDataURL(file);
-    }
-
+    let moduleURL = "[[@{/}]]";
     function checkPasswordMatch(confirmPassword) {
         if (confirmPassword.value !== $("#inputPassword").val()) {
             confirmPassword.setCustomValidity("Password doesnt match!");
@@ -155,6 +128,6 @@
             confirmPassword.setCustomValidity("");
         }
     }
-
 </script>
+<script type="text/javascript" th:src="@{/js/common_form.js}"></script>
 </html>

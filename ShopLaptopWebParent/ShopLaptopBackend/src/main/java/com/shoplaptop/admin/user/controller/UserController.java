@@ -47,7 +47,7 @@ public class UserController {
         model.addAttribute("listRoles", listRoles);
         model.addAttribute("pageTitle", "CREATE NEW USER");
 
-        return "user_form";
+        return "/users/user_form";
     }
 
     @PostMapping("/users/save")
@@ -99,7 +99,7 @@ public class UserController {
             model.addAttribute("listRoles", listRoles);
             model.addAttribute("pageTitle", "UPDATE USER");
 
-            return "user_form";
+            return "/users/user_form";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
 
@@ -171,7 +171,7 @@ public class UserController {
         model.addAttribute("reverseOrder", reverseOrder);
         model.addAttribute("keyword", keyword);
 
-        return "users";
+        return "/users/users";
     }
 
     @GetMapping("/users/export/csv")
