@@ -9,6 +9,26 @@
 <body>
 <div class="container-fluid">
     <div th:replace="fragments/common_component :: menu_page"></div>
+
+    <div class="mt-5 mb-3">
+        <h2>CONTROL PANEL</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a th:href="@{/}">Home</a></li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info" role="alert">
+                Welcome <a th:href="@{/account}" sec:authentication="principal.fullname"></a>
+                &nbsp;
+                <span sec:authentication="principal.authorities"></span>
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 

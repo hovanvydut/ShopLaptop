@@ -149,12 +149,9 @@
     }
 
     function checkPasswordMatch(confirmPassword) {
-        alert(0);
         if (confirmPassword.value !== $("#inputPassword").val()) {
-            alert(1);
             confirmPassword.setCustomValidity("Password doesnt match!");
         } else {
-            alert(2);
             confirmPassword.setCustomValidity("");
         }
     }
